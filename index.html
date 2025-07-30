@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Interactiva - Contabilidad</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .materia { padding: 10px; margin: 5px; border: 1px solid #ccc; border-radius: 5px; }
+    .puede { background-color: #c8f7c5; }
+    .nopuedes { background-color: #f7c5c5; }
+  </style>
+</head>
+<body>
+  <h2>Malla Interactiva - Contabilidad y Auditoría</h2>
+  <p>Selecciona las materias que ya aprobaste:</p>
+
+  <label><input type="checkbox" id="ContabilidadGeneral"> Contabilidad General</label><br>
+  <label><input type="checkbox" id="ContabilidadComercial"> Contabilidad Comercial</label><br>
+  <label><input type="checkbox" id="ContabilidadCostosBasica"> Contabilidad Costos Básica</label><br>
+  <label><input type="checkbox" id="ContabilidadFinanciera"> Contabilidad Financiera</label><br>
+  <label><input type="checkbox" id="PracticaTributaria"> Práctica Tributaria</label><br>
+  <label><input type="checkbox" id="ContabilidadCostosAvanzada"> Contabilidad Costos Avanzada</label><br>
+  <label><input type="checkbox" id="PracticasServicioComunitario"> Prácticas de Servicio Comunitario</label><br>
+
+  <hr>
+  <button onclick="verDisponibles()">Ver materias que puedo tomar</button>
+
+  <h3>Materias disponibles:</h3>
+  <div id="resultado"></div>
+
+  <script>
+    const MATERIAS = [
+      { id: "ContabilidadGeneral", nombre: "Contabilidad General", reqs: [] },
+      { id: "ContabilidadComercial", nombre: "Contabilidad Comercial", reqs: ["ContabilidadGeneral"] },
+      { id: "ContabilidadCostosBasica", nombre: "Contabilidad Costos Básica", reqs: ["ContabilidadComercial"] },
+      { id: "ContabilidadFinanciera", nombre: "Contabilidad Financiera", reqs: ["ContabilidadComercial"] },
+      { id: "PracticaTributaria", nombre: "Práctica Tributaria", reqs: ["LegislacionTributaria", "ContabilidadComercial"] },
+      { id: "ContabilidadCostosAvanzada", nombre: "Contabilidad Costos Avanzada", reqs: ["ContabilidadCostosBasica"] },
+      { id: "PracticasServicioComunitario", nombre: "Prácticas de Servicio Comunitario", reqs: ["ContabilidadCostosAvanzada", "ContabilidadFinanciera", "PracticaTributaria"] }
+    ];
+
+    function verDisponibles() {
+      const aprobadas = {};
+      const materias = MATERIAS;
+      materias.forEach(m => {
+        aprobadas[m.id] = document.getElementById(m.id).checked;
+      });
+
+      const div = document.getElementById("resultado");
+      div.innerHTML = "";
+
+      materias.forEach(m => {
+        if (m.reqs.length === 0) return; // Las iniciales no necesitan validación
+
+        const puede = m.reqs.every(r => aprobadas[r]);
+        const clase = puede ? "materia puede" : "materia nopuedes";
+        div.innerHTML += `<div class="${clase}">${m.nombre} - ${puede ? "✔ Puedes tomarla" : "✖ No puedes tomarla"}</div>`;
+      });
+    }
+  </script>
+</body>
+</html>
